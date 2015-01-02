@@ -39,7 +39,7 @@ class WechatController extends Controller
         }   
     }*/
 
-    public function actionGetMenu()
+    public function actionView()
     {
         $appid="";//填写appid
         $secret="";//填写secret
@@ -66,7 +66,7 @@ class WechatController extends Controller
         echo $b;
     }
 
-    public function actionUpdateMenu()
+    public function actionMenu()
     {
         $appid="";//填写appid
         $secret="";//填写secret
