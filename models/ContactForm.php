@@ -37,7 +37,11 @@ class ContactForm extends Model
     public function attributeLabels()
     {
         return [
-            'verifyCode' => 'Verification Code',
+            'name' => '姓名',
+            'email' => '邮件地址',
+            'subject' => '邮件主题',
+            'body' => '邮件内容',
+            'verifyCode' => '验证码',
         ];
     }
 
