@@ -159,7 +159,7 @@ class WechatController extends Controller
     curl_close($ch); 
     }
 
-    private function checkSignature()
+    public function actionMessage()
     {
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
@@ -170,15 +170,11 @@ class WechatController extends Controller
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
         if( $tmpStr == $signature ){
-            return true;
+            $flag = TRUE;
         }else{
-            return false;
+            $flag = FALSE;
         }
-    }
-
-    public function actionMessage()
-    {
-        if ($this->checkSignature()) {
+        if ($flag) {
             $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
             if (!empty($postStr)){
                 $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
