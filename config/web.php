@@ -14,9 +14,10 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
             ],
-            'suffix' => 'html',
+            'suffix' => '.html',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
