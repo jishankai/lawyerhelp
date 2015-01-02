@@ -16,6 +16,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
             ],
+            'suffix' => 'html',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
