@@ -11,7 +11,7 @@ $this->title = '联系我们';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-contact">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <p><?= Html::encode($this->title) ?></p>
 
     <?php if (Yii::$app->session->hasFlash('contactFormSubmitted')): ?>
 
