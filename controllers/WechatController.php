@@ -44,7 +44,7 @@ class WechatController extends Controller
         $appid="";//填写appid
         $secret="";//填写secret
 
-        $url = "https://.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,$url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
@@ -54,7 +54,7 @@ class WechatController extends Controller
         $strjson=json_decode($a);
         $token = $strjson->access_token;
         
-        $url = "https://.weixin.qq.com/cgi-bin/menu/get?access_token={$token}"; //查询地址 
+        $url = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token={$token}"; //查询地址 
         $ch = curl_init();//新建curl
         curl_setopt($ch, CURLOPT_URL, $url);//url  
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
@@ -71,7 +71,7 @@ class WechatController extends Controller
         $appid="";//填写appid
         $secret="";//填写secret
 
-        $url = "https://.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,$url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
@@ -150,7 +150,7 @@ class WechatController extends Controller
                 }
         ]
     }";  //提交内容
-    $url = "https://.weixin.qq.com/cgi-bin/menu/create?access_token={$token}"; //查询地址 
+    $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token={$token}"; //查询地址 
     $ch = curl_init();//新建curl
     curl_setopt($ch, CURLOPT_URL, $url);//url  
     curl_setopt($ch, CURLOPT_POST, 1);  //post
@@ -159,28 +159,46 @@ class WechatController extends Controller
     curl_close($ch); 
     }
 
+    private function checkSignature()
+    {
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        $token = 'ilovemaomao';
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function actionMessage()
     {
-        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
-        if (!empty($postStr)){
-            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $RX_TYPE = trim($postObj->MsgType);
-            switch ($RX_TYPE) {
-            case 'text':
-                $resultStr = $this->receiveText($postObj);
-                break;
-            case 'event':
-                $resultStr = $this->receiveEvent($postObj);
-                break;
+        if ($this->checkSignature()) {
+            $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+            if (!empty($postStr)){
+                $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+                $RX_TYPE = trim($postObj->MsgType);
+                switch ($RX_TYPE) {
+                case 'text':
+                    $resultStr = $this->receiveText($postObj);
+                    break;
+                case 'event':
+                    $resultStr = $this->receiveEvent($postObj);
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+                }
+
+                echo $resultStr;
             }
-
-            echo $resultStr;
-        }else {
+        } else {
             echo '';
-            exit;
         }
     }
 
@@ -208,7 +226,7 @@ class WechatController extends Controller
             case '4':
                 $a = Util::loadConfig('wechat_gxtp');
                 $resultStr = $this->transmitNews($object, $a);
-                break;*/
+            break;*/
             default:
                 break;
             }
