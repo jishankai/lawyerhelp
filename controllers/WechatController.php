@@ -161,40 +161,26 @@ class WechatController extends Controller
 
     public function actionMessage()
     {
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce = $_GET["nonce"];
-        $token = 'ilovemaomao';
-        $tmpArr = array($token, $timestamp, $nonce);
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-        if( $tmpStr == $signature ){
-            $flag = TRUE;
-        }else{
-            $flag = FALSE;
-        }
-        if ($flag) {
-            $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
-            if (!empty($postStr)){
-                $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
-                $RX_TYPE = trim($postObj->MsgType);
-                switch ($RX_TYPE) {
-                case 'text':
-                    $resultStr = $this->receiveText($postObj);
-                    break;
-                case 'event':
-                    $resultStr = $this->receiveEvent($postObj);
-                    break;
+        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+        if (!empty($postStr)){
+            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $RX_TYPE = trim($postObj->MsgType);
+            switch ($RX_TYPE) {
+            case 'text':
+                $resultStr = $this->receiveText($postObj);
+                break;
+            case 'event':
+                $resultStr = $this->receiveEvent($postObj);
+                break;
 
-                default:
-                    break;
-                }
-
-                echo $resultStr;
+            default:
+                break;
             }
-        } else {
+
+            echo $resultStr;
+        }else {
             echo '';
+            exit;
         }
     }
 
@@ -222,7 +208,7 @@ class WechatController extends Controller
             case '4':
                 $a = Util::loadConfig('wechat_gxtp');
                 $resultStr = $this->transmitNews($object, $a);
-            break;*/
+                break;*/
             default:
                 break;
             }
